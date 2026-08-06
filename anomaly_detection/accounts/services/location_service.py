@@ -1,5 +1,6 @@
 import os
-import geoip2.database
+import geoip2.webservice
+import geoip2.errors
 import requests
 from django.conf import settings
 
@@ -57,24 +58,22 @@ def get_location_data(request, ip_address):
             longitude = 0.0
     else:
         try:
-            db_path = os.path.join(BASE_DIR, 'GeoLite2-City.mmdb')
-            if not os.path.exists(db_path):
-                db_path = os.path.join(BASE_DIR, 'anomaly_detection', 'GeoLite2-City.mmdb')
-
-            reader = geoip2.database.Reader(db_path)
-            response = reader.city(ip_address)
+            client = geoip2.webservice.Client(
+                settings.MAXMIND_ACCOUNT_ID,
+                settings.MAXMIND_LICENSE_KEY,
+                host='geolite.info'
+            )
+            response = client.city(ip_address)
             latitude = response.location.latitude
             longitude = response.location.longitude
             city = response.city.name
             country = response.country.name
-            reader.close()
+            client.close()
             location_retrieved = True
         except geoip2.errors.AddressNotFoundError as e:
             print(f"GeoIP2 Error: Address not found - {e}")
         except Exception as e:
             print(f"GeoIP2 Error: {e}")
-
-    return latitude, longitude, city, country, location_retrieved
 
 
 def get_device_type(request):
