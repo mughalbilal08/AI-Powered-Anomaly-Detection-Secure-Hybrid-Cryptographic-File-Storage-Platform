@@ -10,6 +10,7 @@ To guarantee maximum data confidentiality, the platform employs a Zero-Knowledge
 The platform combines artificial intelligence with modern cryptographic techniques to deliver a secure, intelligent, and scalable cloud file storage solution capable of detecting suspicious activities, preventing unauthorized access, and protecting sensitive user data.
 
 🏗️ Architecture & Technology Stack
+
 Backend
 Framework: Django 5.x (Python)
 Database: SQLite3 with Django ORM
