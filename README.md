@@ -40,37 +40,19 @@ Chart.js
 
 🔄 Complete End-to-End Workflow:
 
-User Request
-      │
-      ▼
-Authentication
-      │
- ┌────┴────┐
- │         │
-Signup   Login
- │         │
- ▼         ▼
-Generate RSA Key Pair
-          │
-          ▼
-Extract IP Address, Location & Device Information
-          │
-          ▼
-Machine Learning Anomaly Detection
-          │
-   ┌──────┴─────────┐
-   │                │
-Normal          Suspicious
-   │                │
-   ▼                ▼
-Dashboard      Email OTP Verification
-        │
-        ▼
-File Upload / Share / Download
-        │
-        ▼
-Hybrid Encryption & Secure File Management
-
+graph TD
+    A[User Request] --> B{Authentication Status}
+    B -->|Signup| C[Generate User RSA Keypair + Encrypt Private Key]
+    B -->|Login| D[Extract IP, Location & Device Type]
+    D --> E[Predict Anomaly via Random Forest ML Model]
+    E -->|Anomaly Detected or Initial Logins| F[Trigger Adaptive Email OTP MFA]
+    E -->|Normal Behavior| G[Grant Direct Dashboard Access]
+    F -->|Verify OTP| G
+    G --> H[File Upload / Share / Download]
+    H -->|Upload| I[Generate AES Key -> Encrypt File -> Encrypt AES Key with Owner RSA Public Key]
+    H -->|Share| J[Decrypt AES Key via Owner Private Key -> Re-encrypt AES Key with Recipient RSA Public Key]
+    H -->|Download| K[Decrypt AES Key via User Private Key -> Decrypt File Content -> SHA-256 Integrity Check]
+    
 ## 🗄️ Database Models Summary
 
 | Model Name | Purpose / Functionality |
