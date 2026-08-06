@@ -1,0 +1,654 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Secure File Sharing{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --bg-gradient: radial-gradient(circle at 50% 35%, #181b26 0%, #0a0b0e 75%);
+            --navbar-bg: rgba(11, 12, 16, 0.95);
+            --card-bg: #151722;
+            --card-border: #262938;
+            --text-color: #cbd5e1;
+            --heading-color: #ffffff;
+            --gold-primary: #f3ba2f;
+            --gold-hover: #fcd535;
+            --gold-glow: rgba(243, 186, 47, 0.28);
+            --nav-btn-bg: #151722;
+            --nav-btn-border: #2b2f42;
+            --footer-bg: #090a0d;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --bg-gradient: radial-gradient(circle at 50% 35%, #ffffff 0%, #e2e8f0 75%);
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: #ffffff;
+            --card-border: #cbd5e1;
+            --text-color: #475569;
+            --heading-color: #0f172a;
+            --gold-primary: #d97706;
+            --gold-hover: #b45309;
+            --gold-glow: rgba(217, 119, 6, 0.2);
+            --nav-btn-bg: #f8fafc;
+            --nav-btn-border: #cbd5e1;
+            --footer-bg: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease, color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Three.js Background Canvas */
+        #threejs-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            background-color: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            padding: 16px 40px;
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--heading-color) !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-primary);
+            font-size: 0.9rem;
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .navbar-nav {
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 16px !important;
+            transition: all 0.25s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        .nav-pill-active {
+            background: #171a26 !important;
+            border: 1px solid var(--gold-primary) !important;
+            color: var(--gold-primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 0 14px var(--gold-glow);
+            font-weight: 600;
+        }
+
+        .nav-divider {
+            color: #334155;
+            font-weight: 300;
+            margin: 0 8px;
+        }
+
+        .btn-nav-login {
+            border: 1px solid var(--gold-primary) !important;
+            color: var(--gold-primary) !important;
+            border-radius: 8px;
+            padding: 7px 20px !important;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .btn-nav-login:hover {
+            background: var(--gold-primary) !important;
+            color: #0b0c10 !important;
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        #theme-toggle {
+            background: transparent;
+            border: none;
+            color: #fbbf24;
+            font-size: 1.25rem;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        #theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.1);
+        }
+
+        /* Main Page Layout Wrapper */
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Signature Hero Card Container */
+        .hero-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 55px 45px;
+            width: 100%;
+            max-width: 660px;
+            text-align: center;
+            position: relative;
+            box-shadow: 
+                -25px 0 50px -10px var(--gold-glow),
+                25px 0 50px -10px var(--gold-glow),
+                0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                -30px 0 60px -8px var(--gold-glow),
+                30px 0 60px -8px var(--gold-glow),
+                0 30px 60px -10px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: var(--heading-color);
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .text-gold {
+            color: var(--gold-primary);
+            background: linear-gradient(135deg, #ffe082 0%, #f3ba2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Shield Divider */
+        .shield-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 22px 0 26px 0;
+        }
+
+        .shield-divider .line {
+            height: 1px;
+            width: 80px;
+            background: linear-gradient(90deg, transparent, #334155, transparent);
+        }
+
+        .shield-divider .shield-icon {
+            color: var(--gold-primary);
+            font-size: 1rem;
+            background: var(--card-bg);
+            padding: 4px 8px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+        }
+
+        /* Subtitle Text (Unified Color across Home, Login, Signup) */
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .hero-subtitle a {
+            color: var(--gold-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .hero-subtitle a:hover {
+            color: var(--gold-hover);
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .btn-group-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-gold-action {
+            background: linear-gradient(135deg, #fcd535 0%, #f3ba2f 100%);
+            color: #0b0c10 !important;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 13px 34px;
+            border-radius: 10px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px var(--gold-glow);
+            transition: all 0.25s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-gold-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 186, 47, 0.45);
+            background: linear-gradient(135deg, #ffe082 0%, #fcd535 100%);
+            color: #000000 !important;
+        }
+
+        .btn-outline-action {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--heading-color) !important;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 13px 34px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-outline-action:hover {
+            border-color: var(--gold-primary);
+            color: var(--gold-primary) !important;
+            background: rgba(243, 186, 47, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Services Grid Section */
+        .services-wrapper {
+            display: none;
+            max-width: 1050px;
+            width: 100%;
+            margin-top: 45px;
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        .services-wrapper.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .services-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--heading-color);
+            letter-spacing: -0.5px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 30px 25px;
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--gold-primary);
+            box-shadow: 0 12px 30px var(--gold-glow);
+        }
+
+        .service-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(243, 186, 47, 0.1);
+            border: 1px solid rgba(243, 186, 47, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-primary);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .service-card h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+            color: var(--text-color);
+            text-align: center;
+            padding: 22px 0;
+            font-size: 0.9rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- ThreeJS Canvas Background -->
+    <canvas id="threejs-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid max-w-7xl mx-auto px-4">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span>Secure File Sharing</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <button id="theme-toggle" title="Toggle Theme">
+                            <i class="fa-solid fa-sun"></i>
+                        </button>
+                    </li>
+                    
+                    <span class="nav-divider d-none d-lg-inline">|</span>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}nav-pill-active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    {% if request.resolver_match.url_name == 'home' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="servicesBtn">Services</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'signup' %}nav-pill-active{% endif %}" href="{% url 'signup' %}">Sign Up</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="btn-nav-login ms-2" href="{% url 'login' %}">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Body -->
+    <div class="page-content">
+        {% block content %}{% endblock %}
+
+        <!-- Services Section Block -->
+        {% block services %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Secure File Sharing. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Theme Toggle Script
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon();
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                localStorage.setItem('theme', currentTheme);
+                updateThemeIcon();
+            });
+        }
+
+        function updateThemeIcon() {
+            if (!themeToggleBtn) return;
+            if (currentTheme === 'dark') {
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+
+        // Services Toggle Handler
+        const servicesBtn = document.getElementById('servicesBtn');
+        if (servicesBtn) {
+            servicesBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const servicesSection = document.querySelector('.services-wrapper');
+                if (servicesSection) {
+                    servicesSection.classList.toggle('show');
+                    if (servicesSection.classList.contains('show')) {
+                        servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        }
+
+        // Three.js Animated Gold Particle Network
+        (function() {
+            const canvas = document.getElementById('threejs-canvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const particleCount = 75;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 30;
+                positions[i + 1] = (Math.random() - 0.5) * 30;
+                positions[i + 2] = (Math.random() - 0.5) * 20;
+
+                velocities[i] = (Math.random() - 0.5) * 0.015;
+                velocities[i + 1] = (Math.random() - 0.5) * 0.015;
+                velocities[i + 2] = (Math.random() - 0.5) * 0.015;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({
+                color: 0xf3ba2f,
+                size: 0.22,
+                transparent: true,
+                opacity: 0.75
+            });
+
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xf3ba2f,
+                transparent: true,
+                opacity: 0.18
+            });
+
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = new Float32Array(particleCount * particleCount * 6);
+            lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+            const lineSystem = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lineSystem);
+
+            camera.position.z = 15;
+
+            let mouseX = 0, mouseY = 0;
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) * 0.0004;
+                mouseY = (e.clientY - window.innerHeight / 2) * 0.0004;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const pos = particles.geometry.attributes.position.array;
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    pos[i] += velocities[i];
+                    pos[i + 1] += velocities[i + 1];
+                    pos[i + 2] += velocities[i + 2];
+
+                    if (Math.abs(pos[i]) > 16) velocities[i] *= -1;
+                    if (Math.abs(pos[i + 1]) > 16) velocities[i + 1] *= -1;
+                    if (Math.abs(pos[i + 2]) > 12) velocities[i + 2] *= -1;
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+
+                let lineIndex = 0;
+                const linePos = lineSystem.geometry.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const dx = pos[i * 3] - pos[j * 3];
+                        const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
+                        const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (dist < 6.5) {
+                            linePos[lineIndex++] = pos[i * 3];
+                            linePos[lineIndex++] = pos[i * 3 + 1];
+                            linePos[lineIndex++] = pos[i * 3 + 2];
+                            linePos[lineIndex++] = pos[j * 3];
+                            linePos[lineIndex++] = pos[j * 3 + 1];
+                            linePos[lineIndex++] = pos[j * 3 + 2];
+                        }
+                    }
+                }
+                lineSystem.geometry.attributes.position.needsUpdate = true;
+
+                scene.rotation.x += (mouseY - scene.rotation.x) * 0.05;
+                scene.rotation.y += (mouseX - scene.rotation.y) * 0.05;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        })();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

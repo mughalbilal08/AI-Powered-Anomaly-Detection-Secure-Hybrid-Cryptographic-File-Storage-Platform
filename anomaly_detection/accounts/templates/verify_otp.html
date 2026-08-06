@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP - Secure File Sharing{% endblock %}
+
+{% block extra_css %}
+<style>
+    .otp-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 50px 45px;
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        position: relative;
+        box-shadow: 
+            -25px 0 50px -10px var(--gold-glow),
+            25px 0 50px -10px var(--gold-glow),
+            0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control-dark {
+        background: #181b26;
+        border: 1px solid #2e3346;
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 1.2rem;
+        letter-spacing: 4px;
+        text-align: center;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .form-control-dark:focus {
+        background: #1c202e;
+        border-color: var(--gold-primary);
+        color: #ffffff;
+        box-shadow: 0 0 14px var(--gold-glow);
+        outline: none;
+    }
+
+    .alert-custom-error {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .alert-custom-success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #86efac;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="otp-card text-center">
+    <div class="mb-2">
+        <h2 class="hero-title mb-2">MFA Verification</h2>
+        <p class="hero-subtitle mb-0">An OTP security code has been sent to your email</p>
+    </div>
+
+    <div class="shield-divider">
+        <span class="line"></span>
+        <span class="shield-icon"><i class="fa-solid fa-key"></i></span>
+        <span class="line"></span>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}alert-custom-error{% else %}alert-custom-success{% endif %}">
+                <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} me-2"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'verify_otp' %}">
+        {% csrf_token %}
+
+        <div class="mb-4 text-start">
+            <label for="id_otp" class="form-label-dark text-center w-100 mb-2">Enter 6-Digit OTP Code</label>
+            <input type="text" name="otp" id="id_otp" maxlength="6" class="form-control form-control-dark" placeholder="123456" autocomplete="off" required autofocus>
+        </div>
+
+        <button type="submit" class="btn-gold-action w-100 justify-content-center py-3">
+            <i class="fa-solid fa-check-double"></i> Verify & Proceed
+        </button>
+    </form>
+
+    <div class="text-center mt-4 pt-2 border-top border-secondary-subtle">
+        <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+            Didn't receive code? <a href="{% url 'login' %}" class="text-gold font-semibold ms-1" style="text-decoration: none;">Try Logging In Again</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

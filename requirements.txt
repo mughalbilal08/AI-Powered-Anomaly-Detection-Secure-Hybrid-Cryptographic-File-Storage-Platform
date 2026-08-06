@@ -1,0 +1,12 @@
+Django>=5.0,<6.0
+scikit-learn
+pandas
+joblib
+cryptography
+geoip2
+requests
+django-otp
+whitenoise
+dj-database-url
+psycopg2-binary
+gunicorn

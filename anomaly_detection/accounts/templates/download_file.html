@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Download File - Secure File Sharing{% endblock %}
+
+{% block extra_css %}
+<style>
+    .download-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 50px 45px;
+        width: 100%;
+        max-width: 540px;
+        margin: 20px auto;
+        position: relative;
+        box-shadow: 
+            -25px 0 50px -10px var(--gold-glow),
+            25px 0 50px -10px var(--gold-glow),
+            0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control-dark {
+        background: #181b26 !important;
+        border: 1px solid #363b50 !important;
+        color: #ffffff !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+        font-size: 0.98rem !important;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+    }
+
+    .form-control-dark:focus {
+        background: #1c202e !important;
+        border-color: var(--gold-primary) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 14px var(--gold-glow) !important;
+        outline: none !important;
+    }
+
+    .form-control-dark::placeholder {
+        color: #94a3b8 !important;
+        opacity: 1 !important;
+    }
+
+    .form-label-dark {
+        color: #e2e8f0;
+        font-weight: 600;
+        font-size: 0.92rem;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .alert-custom-error {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .alert-custom-success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #86efac;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .file-badge {
+        background: rgba(243, 186, 47, 0.12);
+        border: 1px solid rgba(243, 186, 47, 0.3);
+        color: var(--gold-primary);
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-weight: 600;
+        font-size: 0.98rem;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="download-card">
+    <div class="text-center mb-2">
+        <h2 class="hero-title mb-2">Decrypt & Download File</h2>
+        <p class="hero-subtitle mb-0">Enter account password to decrypt RSA key and verify SHA-256 integrity</p>
+    </div>
+
+    <div class="shield-divider">
+        <span class="line"></span>
+        <span class="shield-icon"><i class="fa-solid fa-cloud-arrow-down"></i></span>
+        <span class="line"></span>
+    </div>
+
+    <div class="file-badge">
+        <i class="fa-solid fa-file-arrow-down text-gold"></i>
+        <span>File: {{ file.original_filename }}</span>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}alert-custom-error{% else %}alert-custom-success{% endif %}">
+                <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} me-2"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'download_file' file.id %}">
+        {% csrf_token %}
+
+        <div class="mb-4 text-start">
+            <label for="id_password" class="form-label-dark">Your Account Password</label>
+            <input type="password" name="password" id="id_password" class="form-control form-control-dark" placeholder="Enter password to unlock private key & decrypt file" required autofocus>
+        </div>
+
+        <button type="submit" class="btn-gold-action w-100 justify-content-center py-3">
+            <i class="fa-solid fa-unlock-keyhole"></i> Decrypt & Download File
+        </button>
+    </form>
+
+    <div class="text-center mt-4 pt-2 border-top border-secondary-subtle">
+        <p class="mb-0 text-muted" style="font-size: 0.93rem;">
+            Return to <a href="{% url 'dashboard' %}" class="text-gold font-semibold ms-1" style="text-decoration: none;">Dashboard</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

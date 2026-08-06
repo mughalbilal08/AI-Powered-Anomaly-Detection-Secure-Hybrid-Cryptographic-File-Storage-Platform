@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Secure File Sharing{% endblock %}
+
+{% block content %}
+<div class="hero-card">
+    <h1 class="hero-title">
+        Welcome to<br>
+        <span class="text-gold">Secure File Sharing</span>
+    </h1>
+
+    <div class="shield-divider">
+        <span class="line"></span>
+        <span class="shield-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </span>
+        <span class="line"></span>
+    </div>
+
+    <p class="hero-subtitle">
+        Your trusted platform for secure and efficient file sharing.<br>
+        {% if user.is_authenticated %}
+            You are logged in as <strong>{{ user.username }}</strong>.
+        {% else %}
+            Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'signup' %}">sign up</a> to get started.
+        {% endif %}
+    </p>
+
+    <div class="btn-group-action">
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn-gold-action">
+                <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-gold-action">
+                <i class="fa-solid fa-lock"></i> Login
+            </a>
+            <a href="{% url 'signup' %}" class="btn-outline-action">
+                <i class="fa-solid fa-user"></i> Sign Up
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block services %}
+<div class="services-wrapper">
+    <div class="services-header">
+        <h2>Our Platform Services</h2>
+        <p class="text-muted">Enterprise-grade security features powered by hybrid cryptography & AI</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <h4>Secure File Sharing</h4>
+                <p>End-to-end hybrid cryptography using RSA-2048 and AES-256 for maximum file privacy.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h4>AI Anomaly Detection</h4>
+                <p>Random Forest Machine Learning model detecting suspicious user access in real time.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h4>Adaptive Step-Up MFA</h4>
+                <p>Risk-based automated Email OTP verification whenever unusual activity is detected.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h4>Access Trends</h4>
+                <p>Comprehensive audit logs and trend analytics to monitor file access and sharing history.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
