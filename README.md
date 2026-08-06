@@ -1,5 +1,5 @@
-**AI-Powered Anomaly Detection & Secure Hybrid Cryptographic File Storage Platform
-**
+# Secure Hybrid Cryptographic File Storage with AI-Based Anomaly Detection
+
 📌 Project Overview
 
 This project is a Multi-Layered Security and AI-Driven File Storage Platform developed using Django (Python). It is designed to provide enterprise-grade protection for user accounts and files by integrating user behavior monitoring, machine learning-based anomaly detection, adaptive multi-factor authentication (MFA), and hybrid cryptography (RSA + AES/Fernet).
