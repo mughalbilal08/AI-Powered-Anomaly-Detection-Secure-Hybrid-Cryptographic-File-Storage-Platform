@@ -9,35 +9,31 @@ To guarantee maximum data confidentiality, the platform employs a Zero-Knowledge
 
 The platform combines artificial intelligence with modern cryptographic techniques to deliver a secure, intelligent, and scalable cloud file storage solution capable of detecting suspicious activities, preventing unauthorized access, and protecting sensitive user data.
 
-🏗️ Architecture & Technology Stack
+ ## 🏗️ Technology Stack
 
-Backend
-Framework: Django 5.x (Python)
-Database: SQLite3 with Django ORM
-Artificial Intelligence & Machine Learning
-Algorithm: Random Forest Classifier
-Libraries: Scikit-learn, Pandas, Joblib
-Training Script: train_model.py
-Location & Device Tracking
-GeoIP2 (GeoLite2-City Database)
-OpenStreetMap Nominatim API
-IP Address Extraction from HTTP Request Headers
-Browser Geolocation Support
-Device Detection through User-Agent Analysis
-Cryptography & Security
-Asymmetric Encryption: RSA-2048 (OAEP Padding with SHA-256)
-Symmetric Encryption: AES-256 / Fernet
-Key Derivation: PBKDF2-HMAC (SHA-256, 100,000 Iterations)
-Integrity Verification: SHA-256 File Hashing
-Message Verification: HMAC-SHA256
-Authentication
-Adaptive Email-Based Multi-Factor Authentication (MFA)
-One-Time Password (OTP) Verification using django-otp
-Frontend & Visualization
-HTML5
-CSS3
-Bootstrap
-Chart.js
+| Category | Technologies |
+|----------|--------------|
+| **Backend** | Django 5.x, Python |
+| **Database** | SQLite3, Django ORM |
+| **Machine Learning** | Scikit-learn, Pandas, Joblib, Random Forest Classifier |
+| **Location Services** | GeoIP2, OpenStreetMap Nominatim API |
+| **Authentication** | Django OTP, Email-Based MFA |
+| **Cryptography** | RSA-2048, AES/Fernet, PBKDF2-HMAC, SHA-256, HMAC-SHA256 |
+| **Frontend** | HTML5, CSS3, Bootstrap, Chart.js |
+
+## ✨ Features
+
+- AI-powered anomaly detection using Random Forest
+- Adaptive Multi-Factor Authentication (Email OTP)
+- Hybrid RSA + AES encryption
+- Zero-Knowledge file storage architecture
+- Secure file upload, sharing, and download
+- End-to-end encrypted file sharing
+- SHA-256 file integrity verification
+- HMAC-based notification verification
+- Geolocation and device tracking
+- Real-time activity logging and audit trail
+- Interactive analytics dashboard
 
 🔄 Complete End-to-End Workflow:
 
@@ -161,6 +157,18 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ---
 
+## 🚀 Future Enhancements
+
+- Docker Deployment
+- PostgreSQL Support
+- Redis Caching
+- JWT Authentication
+- OAuth Login
+- Mobile Application
+- AWS S3 Storage
+- Kubernetes Deployment
+- Deep Learning–based Anomaly Detection
+  
 ## 🛡️ Key Security Highlights
 
 1. **Zero-Knowledge Architecture:** Server baseline storage never contains plaintext files or unencrypted private keys.
