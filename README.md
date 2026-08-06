@@ -40,6 +40,7 @@ Chart.js
 
 🔄 Complete End-to-End Workflow:
 
+```mermaid
 graph TD
     A[User Request] --> B{Authentication Status}
     B -->|Signup| C[Generate User RSA Keypair + Encrypt Private Key]
@@ -52,6 +53,7 @@ graph TD
     H -->|Upload| I[Generate AES Key -> Encrypt File -> Encrypt AES Key with Owner RSA Public Key]
     H -->|Share| J[Decrypt AES Key via Owner Private Key -> Re-encrypt AES Key with Recipient RSA Public Key]
     H -->|Download| K[Decrypt AES Key via User Private Key -> Decrypt File Content -> SHA-256 Integrity Check]
+```
     
 ## 🗄️ Database Models Summary
 
