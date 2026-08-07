@@ -23,7 +23,8 @@ def get_ip_address(request):
 
 def get_location_data(request, ip_address):
     """
-    Retrieves location data from browser geolocation or GeoIP2 database fallback.
+    Retrieves location data: lat/lon from browser (if available), 
+    city/country always from MaxMind GeoIP2 lookup.
     Returns (latitude, longitude, city, country, location_retrieved).
     """
     latitude = 0.0
@@ -39,42 +40,31 @@ def get_location_data(request, ip_address):
         try:
             latitude = float(latitude_input)
             longitude = float(longitude_input)
-            try:
-                response = requests.get(
-                    f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json",
-                    headers={'User-Agent': 'AnomalyDetectionApp/1.0 (your.email@example.com)'},
-                    timeout=5
-                )
-                response.raise_for_status()
-                data = response.json()
-                address = data.get('address', {})
-                city = address.get('city') or address.get('town') or address.get('village')
-                country = address.get('country')
-                location_retrieved = True
-            except Exception as e:
-                print(f"Reverse Geocoding Error: {e}")
         except ValueError:
             latitude = 0.0
             longitude = 0.0
-    else:
-        try:
-            client = geoip2.webservice.Client(
-                settings.MAXMIND_ACCOUNT_ID,
-                settings.MAXMIND_LICENSE_KEY,
-                host='geolite.info'
-            )
-            response = client.city(ip_address)
+
+    # Hamesha MaxMind se city/country lein (chahe lat/lon mil bhi jaye)
+    try:
+        client = geoip2.webservice.Client(
+            settings.MAXMIND_ACCOUNT_ID,
+            settings.MAXMIND_LICENSE_KEY,
+            host='geolite.info'
+        )
+        response = client.city(ip_address)
+        city = response.city.name
+        country = response.country.name
+        if latitude == 0.0 and longitude == 0.0:
             latitude = response.location.latitude
             longitude = response.location.longitude
-            city = response.city.name
-            country = response.country.name
-            client.close()
-            location_retrieved = True
-        except geoip2.errors.AddressNotFoundError as e:
-            print(f"GeoIP2 Error: Address not found - {e}")
-        except Exception as e:
-            print(f"GeoIP2 Error: {e}")
+        client.close()
+        location_retrieved = True
+    except geoip2.errors.AddressNotFoundError as e:
+        print(f"GeoIP2 Error: Address not found - {e}")
+    except Exception as e:
+        print(f"GeoIP2 Error: {e}")
 
+    return latitude, longitude, city, country, location_retrieved
 
 def get_device_type(request):
     """
